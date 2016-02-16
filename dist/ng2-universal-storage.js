@@ -1,5 +1,4 @@
 var lz_string_d_1 = require('lz-string/libs/lz-string');
-//import {LZString} from 'lz-string/libs/lz-string'
 var UniStorage = (function () {
     function UniStorage() {
         //console.log('UniStorage constructor');
@@ -37,7 +36,7 @@ var UniStorage = (function () {
     };
     UniStorage.prototype.setItem = function (key, value, fallbackType) {
         if (this._localStorageSupported) {
-            window.localStorage[key] = value;
+            window.localStorage.setItem(key, value);
         }
         else if (fallbackType != undefined && fallbackType == 'cookie') {
             UniStorage._writeCookie(key, lz_string_d_1.LZString.compressToEncodedURIComponent(JSON.stringify(value)));
@@ -48,7 +47,7 @@ var UniStorage = (function () {
     };
     UniStorage.prototype.getItem = function (key, fallbackType) {
         if (this._localStorageSupported) {
-            return window.localStorage[key] || null;
+            return window.localStorage.getItem(key) || null;
         }
         else if (fallbackType != undefined && fallbackType == 'cookie') {
             var val = UniStorage._readCookie(key);

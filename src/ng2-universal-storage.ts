@@ -41,9 +41,9 @@ export class UniStorage {
         return null;
     }
 
-    public setItem(key:string, value:string, fallbackType:string) {
+    public setItem(key:string, value:string, fallbackType?:string) {
         if (this._localStorageSupported) {
-            window.localStorage[key] = value;
+            window.localStorage.setItem(key, value);
         } else if (fallbackType != undefined && fallbackType == 'cookie') {
             UniStorage._writeCookie(key, LZString.compressToEncodedURIComponent(JSON.stringify(value)));
         } else {
@@ -51,9 +51,9 @@ export class UniStorage {
         }
     }
 
-    public getItem(key:string, fallbackType:string) {
+    public getItem(key:string, fallbackType?:string) {
         if (this._localStorageSupported) {
-            return window.localStorage[key] || null;
+            return window.localStorage.getItem(key) || null;
         } else if (fallbackType != undefined && fallbackType == 'cookie') {
             var val = UniStorage._readCookie(key);
             return val ? JSON.parse(LZString.decompressFromEncodedURIComponent(val)) : null;
