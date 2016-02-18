@@ -1,8 +1,13 @@
-import {Injector, Binding, Provider} from 'angular2/core'
+import {Injectable}     from 'angular2/core';
 import {LZString} from 'lz-string/typings/lz-string.d'
 
+@Injectable()
 export class UniStorage {
     private _localStorageSupported:boolean;
+
+    static FALLBACK_TYPE_COOKIE = 'cookie';
+    static FALLBACK_TYPE_WINDOW = 'window';
+    static PREFIX = 'ngStorage';
 
     constructor() {
         //console.log('UniStorage constructor');
@@ -42,21 +47,23 @@ export class UniStorage {
     }
 
     public setItem(key:string, value:string, fallbackType?:string) {
+        key = UniStorage.PREFIX + '-' + key;
         if (this._localStorageSupported) {
             window.localStorage.setItem(key, value);
-        } else if (fallbackType != undefined && fallbackType == 'cookie') {
-            UniStorage._writeCookie(key, LZString.compressToEncodedURIComponent(JSON.stringify(value)));
+        } else if (fallbackType != undefined && fallbackType == UniStorage.FALLBACK_TYPE_COOKIE) {
+            UniStorage._writeCookie(key, LZString.compressToEncodedURIComponent(value));
         } else {
             window['UniStorage' + key] = value;
         }
     }
 
     public getItem(key:string, fallbackType?:string) {
+        key = UniStorage.PREFIX + '-' + key;
         if (this._localStorageSupported) {
             return window.localStorage.getItem(key) || null;
-        } else if (fallbackType != undefined && fallbackType == 'cookie') {
+        } else if (fallbackType != undefined && fallbackType == UniStorage.FALLBACK_TYPE_COOKIE) {
             var val = UniStorage._readCookie(key);
-            return val ? JSON.parse(LZString.decompressFromEncodedURIComponent(val)) : null;
+            return val ? LZString.decompressFromEncodedURIComponent(val) : null;
         } else {
             return window['UniStorage' + key] || null;
         }

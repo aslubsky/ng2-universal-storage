@@ -29,6 +29,12 @@ gulp.task('copyTs', function () {
         }));
 });
 
+gulp.task('replaceExport', ['clean', 'ts2js'], function(){
+    return gulp.src(['export.js'])
+        .pipe(replace('src/', 'dist/'))
+        .pipe(gulp.dest('.'));
+});
+
 gulp.task('watch', ['ts2js', 'copyTs'], function () {
     gulp.watch(PATHS.src, ['ts2js', 'copyTs']);
 });

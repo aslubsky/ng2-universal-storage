@@ -1,3 +1,13 @@
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+var core_1 = require('angular2/core');
 var lz_string_d_1 = require('lz-string/libs/lz-string');
 var UniStorage = (function () {
     function UniStorage() {
@@ -35,28 +45,37 @@ var UniStorage = (function () {
         return null;
     };
     UniStorage.prototype.setItem = function (key, value, fallbackType) {
+        key = UniStorage.PREFIX + '-' + key;
         if (this._localStorageSupported) {
             window.localStorage.setItem(key, value);
         }
-        else if (fallbackType != undefined && fallbackType == 'cookie') {
-            UniStorage._writeCookie(key, lz_string_d_1.LZString.compressToEncodedURIComponent(JSON.stringify(value)));
+        else if (fallbackType != undefined && fallbackType == UniStorage.FALLBACK_TYPE_COOKIE) {
+            UniStorage._writeCookie(key, lz_string_d_1.LZString.compressToEncodedURIComponent(value));
         }
         else {
             window['UniStorage' + key] = value;
         }
     };
     UniStorage.prototype.getItem = function (key, fallbackType) {
+        key = UniStorage.PREFIX + '-' + key;
         if (this._localStorageSupported) {
             return window.localStorage.getItem(key) || null;
         }
-        else if (fallbackType != undefined && fallbackType == 'cookie') {
+        else if (fallbackType != undefined && fallbackType == UniStorage.FALLBACK_TYPE_COOKIE) {
             var val = UniStorage._readCookie(key);
-            return val ? JSON.parse(lz_string_d_1.LZString.decompressFromEncodedURIComponent(val)) : null;
+            return val ? lz_string_d_1.LZString.decompressFromEncodedURIComponent(val) : null;
         }
         else {
             return window['UniStorage' + key] || null;
         }
     };
+    UniStorage.FALLBACK_TYPE_COOKIE = 'cookie';
+    UniStorage.FALLBACK_TYPE_WINDOW = 'window';
+    UniStorage.PREFIX = 'ngStorage';
+    UniStorage = __decorate([
+        core_1.Injectable(), 
+        __metadata('design:paramtypes', [])
+    ], UniStorage);
     return UniStorage;
 })();
 exports.UniStorage = UniStorage;
