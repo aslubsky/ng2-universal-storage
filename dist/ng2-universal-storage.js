@@ -8,7 +8,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 var core_1 = require('angular2/core');
-var lz_string_d_1 = require('lz-string/libs/lz-string');
+require('lz-string/libs/lz-string');
 var UniStorage = (function () {
     function UniStorage() {
         //console.log('UniStorage constructor');
@@ -21,14 +21,8 @@ var UniStorage = (function () {
             this._localStorageSupported = false;
         }
     }
-    UniStorage._writeCookie = function (name, value, days) {
-        var expires = "";
-        if (days) {
-            var date = new Date();
-            date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
-            expires = "; expires=" + date.toUTCString();
-        }
-        document.cookie = name + "=" + value + expires + "; path=/";
+    UniStorage._writeCookie = function (name, value) {
+        document.cookie = name + "=" + value + "; path=/";
     };
     UniStorage._readCookie = function (name) {
         var nameEQ = name + "=";
@@ -50,10 +44,10 @@ var UniStorage = (function () {
             window.localStorage.setItem(key, value);
         }
         else if (fallbackType != undefined && fallbackType == UniStorage.FALLBACK_TYPE_COOKIE) {
-            UniStorage._writeCookie(key, lz_string_d_1.LZString.compressToEncodedURIComponent(value));
+            UniStorage._writeCookie(key, LZString.compressToEncodedURIComponent(value));
         }
         else {
-            window['UniStorage' + key] = value;
+            window[key] = value;
         }
     };
     UniStorage.prototype.getItem = function (key, fallbackType) {
@@ -63,10 +57,10 @@ var UniStorage = (function () {
         }
         else if (fallbackType != undefined && fallbackType == UniStorage.FALLBACK_TYPE_COOKIE) {
             var val = UniStorage._readCookie(key);
-            return val ? lz_string_d_1.LZString.decompressFromEncodedURIComponent(val) : null;
+            return val ? LZString.decompressFromEncodedURIComponent(decodeURIComponent(val)) : null;
         }
         else {
-            return window['UniStorage' + key] || null;
+            return window[key] || null;
         }
     };
     UniStorage.FALLBACK_TYPE_COOKIE = 'cookie';

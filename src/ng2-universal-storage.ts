@@ -1,5 +1,23 @@
 import {Injectable}     from 'angular2/core';
-import {LZString} from 'lz-string/typings/lz-string.d'
+
+require('lz-string/libs/lz-string');
+declare module LZString {
+    function compressToBase64(input: string): string;
+    function decompressFromBase64(input: string): string;
+
+    function compressToUTF16(input: string): string;
+    function decompressFromUTF16(compressed: string): string;
+
+    function compressToUint8Array(uncompressed: string): Uint8Array;
+    function decompressFromUint8Array(compressed: Uint8Array): string;
+
+    function compressToEncodedURIComponent(input: string): string;
+    function decompressFromEncodedURIComponent(compressed: string): string;
+
+    function compress(input: string): string;
+    function decompress(compressed: string): string;
+}
+
 
 @Injectable()
 export class UniStorage {
@@ -20,14 +38,8 @@ export class UniStorage {
         }
     }
 
-    private static _writeCookie(name, value, days?:number) {
-        var expires = "";
-        if (days) {
-            var date = new Date();
-            date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
-            expires = "; expires=" + date.toUTCString();
-        }
-        document.cookie = name + "=" + value + expires + "; path=/";
+    private static _writeCookie(name, value) {
+        document.cookie = name + "=" + value + "; path=/";
     }
 
 
@@ -53,7 +65,7 @@ export class UniStorage {
         } else if (fallbackType != undefined && fallbackType == UniStorage.FALLBACK_TYPE_COOKIE) {
             UniStorage._writeCookie(key, LZString.compressToEncodedURIComponent(value));
         } else {
-            window['UniStorage' + key] = value;
+            window[key] = value;
         }
     }
 
@@ -63,9 +75,9 @@ export class UniStorage {
             return window.localStorage.getItem(key) || null;
         } else if (fallbackType != undefined && fallbackType == UniStorage.FALLBACK_TYPE_COOKIE) {
             var val = UniStorage._readCookie(key);
-            return val ? LZString.decompressFromEncodedURIComponent(val) : null;
+            return val ? LZString.decompressFromEncodedURIComponent(decodeURIComponent(val)) : null;
         } else {
-            return window['UniStorage' + key] || null;
+            return window[key] || null;
         }
     }
 }
