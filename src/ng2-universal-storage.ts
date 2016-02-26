@@ -1,24 +1,5 @@
 import {Injectable}     from 'angular2/core';
 
-require('lz-string/libs/lz-string');
-declare module LZString {
-    function compressToBase64(input: string): string;
-    function decompressFromBase64(input: string): string;
-
-    function compressToUTF16(input: string): string;
-    function decompressFromUTF16(compressed: string): string;
-
-    function compressToUint8Array(uncompressed: string): Uint8Array;
-    function decompressFromUint8Array(compressed: Uint8Array): string;
-
-    function compressToEncodedURIComponent(input: string): string;
-    function decompressFromEncodedURIComponent(compressed: string): string;
-
-    function compress(input: string): string;
-    function decompress(compressed: string): string;
-}
-
-
 @Injectable()
 export class UniStorage {
     private _localStorageSupported:boolean;
@@ -63,7 +44,7 @@ export class UniStorage {
         if (this._localStorageSupported) {
             window.localStorage.setItem(key, value);
         } else if (fallbackType != undefined && fallbackType == UniStorage.FALLBACK_TYPE_COOKIE) {
-            UniStorage._writeCookie(key, LZString.compressToEncodedURIComponent(value));
+            UniStorage._writeCookie(key, LZString.compressToBase64(value));
         } else {
             window[key] = value;
         }
@@ -75,7 +56,7 @@ export class UniStorage {
             return window.localStorage.getItem(key) || null;
         } else if (fallbackType != undefined && fallbackType == UniStorage.FALLBACK_TYPE_COOKIE) {
             var val = UniStorage._readCookie(key);
-            return val ? LZString.decompressFromEncodedURIComponent(decodeURIComponent(val)) : null;
+            return val ? LZString.decompressFromBase64(decodeURIComponent(val)) : null;
         } else {
             return window[key] || null;
         }

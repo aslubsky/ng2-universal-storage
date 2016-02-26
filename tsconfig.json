@@ -1,20 +1,20 @@
 {
     "compilerOptions": {
-        "module": "commonjs",
         "target": "es5",
-        "noImplicitAny": false,
+        "module": "system",
+        "moduleResolution": "node",
+        "sourceMap": true,
         "emitDecoratorMetadata": true,
         "experimentalDecorators": true,
-        "sourceMap": true,
-        "declaration": true,
-        "outDir": "dist",
-        "rootDir": "src"
+        "removeComments": false,
+        "noImplicitAny": false,
+        "outDir": "./dist",
+        "rootDir": "./src",
+        "sourceRoot": "./"
     },
     "exclude": [
-        "typings/main.d.ts",
-        "typings/main",
         "node_modules",
-        "dist",
-        "demo"
+        "typings/main",
+        "typings/main.d.ts"
     ]
 }
