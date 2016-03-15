@@ -6,7 +6,7 @@ export class UniStorage {
 
     static FALLBACK_TYPE_COOKIE = 'cookie';
     static FALLBACK_TYPE_WINDOW = 'window';
-    static PREFIX = 'ngStorage';
+    static PREFIX = 'ngStorage2';
 
     constructor() {
         //console.log('UniStorage constructor');
