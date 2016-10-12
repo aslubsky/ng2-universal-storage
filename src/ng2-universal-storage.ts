@@ -2,11 +2,11 @@ import {Injectable}     from '@angular/core';
 
 @Injectable()
 export class UniStorage {
-    private _localStorageSupported:boolean;
+    private _localStorageSupported: boolean;
 
-    static FALLBACK_TYPE_COOKIE = 'cookie';
-    static FALLBACK_TYPE_WINDOW = 'window';
-    static PREFIX = 'ngStorage2';
+    static FALLBACK_TYPE_COOKIE: string = 'cookie';
+    static FALLBACK_TYPE_WINDOW: string = 'window';
+    static PREFIX: string = 'ngStorage2';
 
     constructor() {
         //console.log('UniStorage constructor');
@@ -19,12 +19,12 @@ export class UniStorage {
         }
     }
 
-    private static _writeCookie(name, value) {
+    private static _writeCookie(name: string, value: string): void {
         document.cookie = name + "=" + value + "; path=/";
     }
 
 
-    private static _readCookie(name) {
+    private static _readCookie(name: any): string|null {
         var nameEQ = name + "=";
         var ca = document.cookie.split(';');
         for (var i = 0; i < ca.length; i++) {
@@ -39,7 +39,7 @@ export class UniStorage {
         return null;
     }
 
-    public setItem(key:string, value:string, fallbackType?:string) {
+    public setItem(key: string, value: string, fallbackType?: string): void {
         key = UniStorage.PREFIX + '-' + key;
         if (this._localStorageSupported) {
             window.localStorage.setItem(key, value);
@@ -50,7 +50,7 @@ export class UniStorage {
         }
     }
 
-    public getItem(key:string, fallbackType?:string) {
+    public getItem(key: string, fallbackType?: string): any {
         key = UniStorage.PREFIX + '-' + key;
         if (this._localStorageSupported) {
             return window.localStorage.getItem(key) || null;
