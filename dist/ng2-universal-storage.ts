@@ -44,7 +44,7 @@ export class UniStorage {
         if (this._localStorageSupported) {
             window.localStorage.setItem(key, value);
         } else if (fallbackType != undefined && fallbackType == UniStorage.FALLBACK_TYPE_COOKIE) {
-            UniStorage._writeCookie(key, LZString.compressToBase64(value));
+            UniStorage._writeCookie(key, value);
         } else {
             window[key] = value;
         }
@@ -56,7 +56,7 @@ export class UniStorage {
             return window.localStorage.getItem(key) || null;
         } else if (fallbackType != undefined && fallbackType == UniStorage.FALLBACK_TYPE_COOKIE) {
             var val = UniStorage._readCookie(key);
-            return val ? LZString.decompressFromBase64(decodeURIComponent(val)) : null;
+            return val ? decodeURIComponent(val) : null;
         } else {
             return window[key] || null;
         }
